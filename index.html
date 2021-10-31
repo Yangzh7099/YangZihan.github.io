@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>每周努力一点点</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="每周努力一点点" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">每周努力一点点</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">试了无数次成功一次，那个机会不是被抓住，那个机会是被试出来的</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa "></i> 关于</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  <article id="post-stream" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/10/31/stream/">如何使用stream优化代码</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-31T09:30:19.000Z" itemprop="datePublished">2021年10月31日</time>
+</span>
+      
+      
+      
+<a href="/2021/10/31/stream/#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="如何使用jdk1-8特性优化代码-一"><a href="#如何使用jdk1-8特性优化代码-一" class="headerlink" title="如何使用jdk1.8特性优化代码(一)"></a>如何使用jdk1.8特性优化代码(一)</h1><h2 id="通过stream-api优化代码"><a href="#通过stream-api优化代码" class="headerlink" title="通过stream api优化代码"></a>通过stream api优化代码</h2><h3 id="什么是steam"><a href="#什么是steam" class="headerlink" title="什么是steam"></a>什么是steam</h3><h4 id="Steam概述"><a href="#Steam概述" class="headerlink" title="Steam概述"></a>Steam概述</h4><p>Stream是 Java 8新增加的类，用来补充集合类。<br>Stream代表数据流，流中的数据元素的数量可能是有限的，也可能是无限的。<br>Java Stream提供了提供了串行和并行两种类型的流，保持一致的接口，提供函数式编程方式，以管道方式提供中间操作和最终执行操作，为Java语言的集合提供了现代语言提供的类似的高阶函数操作。</p>
+<h4 id="Steam的并行流"><a href="#Steam的并行流" class="headerlink" title="Steam的并行流"></a>Steam的并行流</h4><p>并行流就是把一个内容分成多个数据块，并用不同的线程分别处理每个数据块的流。串行流则相反，并行流的底层其实就是ForkJoin框架的一个实现。</p>
+<p>使用ForkJoin时，<strong>任务的量一定要大</strong>，否则太小，由于任务拆分也会消耗时间，<strong>它执行的效率不一定比for循环高</strong>。</p>
+<h4 id="函数式编程"><a href="#函数式编程" class="headerlink" title="函数式编程"></a>函数式编程</h4><p>我们最常用的面向对象编程（Java）属于<strong>命令式编程</strong>（Imperative Programming）这种编程范式。常见的编程范式还有<strong>逻辑式编程</strong>（Logic Programming），<strong>函数式编程</strong>（Functional Programming）。</p>
+<p>什么是函数式编程？简单的回答：一切都是数学函数。函数式编程语言里也可以有对象，<strong>但通常这些对象都是恒定不变的</strong> —— 要么是函数参数，要什么是函数返回值。函数式编程语言里没有 for/next 循环，因为这些逻辑意味着有状态的改变。相替代的是，这种循环逻辑在函数式编程语言里是通过递归、把函数当成参数传递的方式实现的。</p>
+<p><img src="/2021/10/31/stream/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B.bmp" alt="函数式编程"></p>
+<h4 id="Stream怎么产生无限的流数据？"><a href="#Stream怎么产生无限的流数据？" class="headerlink" title="Stream怎么产生无限的流数据？"></a>Stream怎么产生无限的流数据？</h4><p>1.使用 iterate 方法</p>
+<p>获取前30个Fibonacci数字，如果去掉limit则会无限打印</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @author yangzihan</span><br><span class="line"> */</span><br><span class="line">public class InfiniteStream &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        IntStream.iterate(1, k -&gt; Math.addExact(k, 1)).limit(30)</span><br><span class="line">                .forEach(x -&gt; System.out.println(getN(x)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static int getN(int k) &#123;</span><br><span class="line">        if (k == 0) &#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">        if (k == 1) &#123;</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (k == 2) &#123;</span><br><span class="line">            return 2;</span><br><span class="line">        &#125;</span><br><span class="line">        return getN(k - 1) + getN(k - 2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>2.实现IntSupplier</p>
+<p>获取前10个质数，如果去掉limit则会无限打印</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 埃氏筛选法找质数</span><br><span class="line">IntSupplier primeSupplier = new IntSupplier() &#123;</span><br><span class="line">    private int currPrime = 2;</span><br><span class="line">    private List&lt;Integer&gt; primeList = new ArrayList&lt;&gt;();</span><br><span class="line">    @Override</span><br><span class="line">    public int getAsInt() &#123;</span><br><span class="line">        if(!primeList.isEmpty())&#123;</span><br><span class="line">            boolean notFind = true;</span><br><span class="line">            while(notFind)&#123;</span><br><span class="line">                currPrime++;</span><br><span class="line">                notFind = primeList.stream().anyMatch(n -&gt; currPrime%n==0);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        primeList.add(currPrime);</span><br><span class="line">        return currPrime;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">IntStream.generate(primeSupplier).limit(10).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Stream使用"><a href="#Stream使用" class="headerlink" title="Stream使用"></a>Stream使用</h3><p>stream的使用分为3步，分别问创建，中间操作，终止操作</p>
+<h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><p>从一个数据源，如集合、数组中获取流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.使用集合创建流</span></span><br><span class="line">        Stream&lt;User&gt; userStream = userList.stream(); <span class="comment">//创建串行流</span></span><br><span class="line">        Stream&lt;User&gt; userStreamPal = userList.parallelStream(); <span class="comment">//创建并行流</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// b.指定数据创建流</span></span><br><span class="line">        Stream&lt;User&gt; userStream = Stream.of(user1, user2); <span class="comment">//创建串行流</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// c.使用数组创建流</span></span><br><span class="line"><span class="comment">//    1.使用Stream.of</span></span><br><span class="line">        User[] users = getUserArray();</span><br><span class="line">        Stream&lt;User&gt; userStream = Stream.of(users);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 	  2.使用Stream.of</span></span><br><span class="line">        Stream&lt;String&gt; stringStream = Arrays.stream(<span class="keyword">new</span> String[]&#123;<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//    3.对于int,double,long三种基础类型有单独的stream封装类可以进行数组转换</span></span><br><span class="line">        IntStream intStream = Arrays.stream(<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>]);</span><br><span class="line">        LongStream longStream = Arrays.stream(<span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">0</span>]);</span><br><span class="line">        DoubleStream doubleStream = Arrays.stream(<span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//    4.对于char,byte,short,float等基础数据类型数组转换可以用这种方式, char,byte,short转为IntStream,float转为DoubleStream</span></span><br><span class="line">        <span class="keyword">char</span> c[] = <span class="string">&quot;&quot;</span>.toCharArray();</span><br><span class="line">        IntStream intStream = IntStream.range(<span class="number">0</span>, c.length).map(i -&gt; c[i]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">float</span>[] floatArray = <span class="keyword">new</span> <span class="keyword">float</span>[<span class="number">0</span>];</span><br><span class="line">        DoubleStream ds = IntStream.range(<span class="number">0</span>, floatArray.length).mapToDouble(i -&gt; floatArray[i]);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// d.字符串分割创建流</span></span><br><span class="line">        String sentence = <span class="string">&quot;ma zhi chu is a Java wechat official account.&quot;</span>;</span><br><span class="line">        Stream&lt;String&gt; wordStream = Pattern.compile(<span class="string">&quot;\\W&quot;</span>).splitAsStream(sentence);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="中间操作"><a href="#中间操作" class="headerlink" title="中间操作"></a>中间操作</h4><p>1.筛选</p>
+<p>根据条件过滤</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>根据条数过滤，获取前maxSize条数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;T&gt; limit(long maxSize);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>跳过n个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;T&gt; skip(long n);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>去重，根据hashCode()和equals()去除重复元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;T&gt; distinct();</span><br></pre></td></tr></table></figure>
+
+
+
+<p>2.映射</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;R&gt; Stream&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper);</span><br></pre></td></tr></table></figure>
+
+<p>将一个流的所有元素，全部映射为另一个元素</p>
+<p>map将一个元素映射到另一个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;R&gt; Stream&lt;R&gt; flatMap(Function&lt;? super T, ? extends Stream&lt;? extends R&gt;&gt; mapper);</span><br></pre></td></tr></table></figure>
+
+<p>将一个流的所有元素，全部映射为另一个流</p>
+<p>flatMap将一个元素映射到另一个流</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Arrays.asList(&quot;aa bb cc&quot;, &quot;tt qq aa&quot;).stream().map(x -&gt; Arrays.stream(x.split(&quot; &quot;))).forEach(x -&gt; System.out.print(x + &quot; &quot;));</span><br><span class="line">System.out.println();</span><br><span class="line">Arrays.asList(&quot;aa bb cc&quot;, &quot;tt qq aa&quot;).stream().flatMap(x -&gt; Arrays.stream(x.split(&quot; &quot;))).forEach(x -&gt; System.out.print(x + &quot; &quot;));</span><br><span class="line"></span><br><span class="line">java.util.stream.ReferencePipeline$Head@69663380 java.util.stream.ReferencePipeline$Head@5b37e0d2 </span><br><span class="line">aa bb cc tt qq aa </span><br></pre></td></tr></table></figure>
+
+<p>map映射了一次，直接映射为流</p>
+<p>flatMap映射了两次，先把数据映射为流，再把流里面的数据扁平化处理</p>
+<p>3.排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;T&gt; sorted(Comparator&lt;? super T&gt; comparator);</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="终止操作"><a href="#终止操作" class="headerlink" title="终止操作"></a>终止操作</h4><p>1.匹配</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">boolean anyMatch(Predicate&lt;? super T&gt; predicate);</span><br><span class="line">   boolean noneMatch(Predicate&lt;? super T&gt; predicate);</span><br><span class="line">   boolean allMatch(Predicate&lt;? super T&gt; predicate);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>2.查找</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;T&gt; findAny();</span><br><span class="line">Optional&lt;T&gt; findFirst();</span><br></pre></td></tr></table></figure>
+
+
+
+<p>3.统计</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">count</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function">Optional&lt;T&gt; <span class="title">max</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> T&gt; comparator)</span></span>;</span><br><span class="line">   <span class="function">Optional&lt;T&gt; <span class="title">min</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> T&gt; comparator)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>4.计算</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;T&gt; reduce(BinaryOperator&lt;T&gt; accumulator);</span><br><span class="line">   T reduce(T identity, BinaryOperator&lt;T&gt; accumulator);</span><br><span class="line">   &lt;U&gt; U reduce(U identity,</span><br><span class="line">                BiFunction&lt;U, ? super T, U&gt; accumulator,</span><br><span class="line">                BinaryOperator&lt;U&gt; combiner);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>5.收集</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">    &lt;R, A&gt; <span class="function">R <span class="title">collect</span><span class="params">(Collector&lt;? <span class="keyword">super</span> T, A, R&gt; collector)</span></span>;</span><br><span class="line">    <span class="comment">// 参数可以为：</span></span><br><span class="line">    Collectors.toList();</span><br><span class="line">    Collectors.toSet();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//  t-&gt;t 可以替换为 Function.identity()</span></span><br><span class="line">    <span class="comment">// 需要注意的是，使用该方法，生成map时，如果存在重复的key，会报错</span></span><br><span class="line">    getUsers().stream().collect(Collectors.toMap(user -&gt; user.getId(), t-&gt;t));</span><br><span class="line">    </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T, K, U&gt;</span><br><span class="line">Collector&lt;T, ?, Map&lt;K,U&gt;&gt; toMap(Function&lt;? <span class="keyword">super</span> T, ? extends K&gt; keyMapper,</span><br><span class="line">                                Function&lt;? <span class="keyword">super</span> T, ? extends U&gt; valueMapper)  &#123;</span><br><span class="line">       <span class="keyword">return</span> toMap(keyMapper, valueMapper, throwingMerger(), HashMap::<span class="keyword">new</span>);</span><br><span class="line">	&#125;</span><br><span class="line">     <span class="comment">// 查看源码发现，它在传入了mergeFunction这个参数中传入了throwingMerger()</span></span><br><span class="line">     <span class="comment">// mergeFunction表示如果出现重复的key，如何进行处理</span></span><br><span class="line">     <span class="comment">// throwingMerger()表示如果没有处理重复的key，则会直接抛异常</span></span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">static</span> &lt;T, K, U, M extends Map&lt;K, U&gt;&gt;</span><br><span class="line">   Collector&lt;T, ?, M&gt; toMap(Function&lt;? <span class="keyword">super</span> T, ? extends K&gt; keyMapper,</span><br><span class="line">                            Function&lt;? <span class="keyword">super</span> T, ? extends U&gt; valueMapper,</span><br><span class="line">                            BinaryOperator&lt;U&gt; mergeFunction,</span><br><span class="line">                            Supplier&lt;M&gt; mapSupplier) </span><br><span class="line">         </span><br><span class="line">    <span class="comment">// 所以我们用上面的方法来构造toMap，减少不必要的问题出现                  </span></span><br><span class="line">    getUsers().stream().collect(Collectors.toMap(user -&gt; user.getId(), Function.identity(), (oldValue, newValue) -&gt; newValue, HashMap::<span class="keyword">new</span>));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://yangzihan.github.io.git/index.html">https://yangzihan.github.io.git/index.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%9F%BA%E7%A1%80/" rel="tag">java基础</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-code" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/10/28/code/">java 编码</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-28T14:21:51.000Z" itemprop="datePublished">2021年10月28日</time>
+</span>
+      
+      
+      
+<a href="/2021/10/28/code/#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="为什么要编码"><a href="#为什么要编码" class="headerlink" title="为什么要编码"></a>为什么要编码</h1><p>​        由于人类的语言有太多，因而表示这些语言的符号太多，无法用计算机中一个基本的存储单元—— byte 来表示，因而必须要经过拆分或一些翻译工作，才能让计算机能理解。</p>
+<p><strong>编码的原因可以总结为：</strong></p>
+<ol>
+<li>计算机中存储信息的最小单元是一个字节即 8 个 bit，所以能表示的字符范围是 0~255 个</li>
+<li>人类要表示的符号太多，无法用一个字节来完全表示</li>
+<li>要解决这个矛盾必须需要一个新的数据结构 char，从 char 到 byte 必须编码</li>
+</ol>
+<h2 id="如何“翻译”"><a href="#如何“翻译”" class="headerlink" title="如何“翻译”"></a>如何“翻译”</h2><p>​        计算中提拱了多种翻译方式，常见的有 ASCII、ISO-8859-1、GBK、UTF-8 等。它们都可以被看作为字典，它们规定了转化的规则，按照这个规则就可以让计算机正确的表示我们的字符。</p>
+<h1 id="常用的编码"><a href="#常用的编码" class="headerlink" title="常用的编码"></a>常用的编码</h1><h2 id="ASCII-码"><a href="#ASCII-码" class="headerlink" title="ASCII 码"></a>ASCII 码</h2><p>ascii码，全称为 American Standard Code for Information Interconnection，中文翻译过来就是：美国信息交换标准代码</p>
+<p>一个ascii码只有一个字节，所以ascii码总共有128 个，用一个字节的低 7 位表示，0<del>31 是控制字符如换行回车删除等；32</del>126 是打印字符，可以通过键盘输入并且能够显示出来</p>
+<p><img src="/2021/10/28/code/ascii%E7%A0%81.png"></p>
+<p>数字的ascii码是<strong>48-57</strong></p>
+<p>大写英文字母的ascii码是<strong>65-90</strong></p>
+<p>小写英文字母的ascii码是<strong>97-122</strong></p>
+<p>利用ascii码可以很轻松的统计数字，大小写英文字母的数据个数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.stream.Stream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Count</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String t = <span class="string">&quot;12e2eqwrt32trQWE!@E@!r12235#$@T$#&amp;$%U*%^UJH$T#@R23e&quot;</span>;</span><br><span class="line">        countNumber(t);</span><br><span class="line">        countLowercaseLetters(t);</span><br><span class="line">        countUppercaseLetters(t);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">countNumber</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        Stream&lt;Character&gt; s = String.valueOf(str).chars().mapToObj(a -&gt; (<span class="keyword">char</span>) a);</span><br><span class="line">        System.out.println(<span class="string">&quot;数字有:&quot;</span> + s.filter(x -&gt; x &gt;= <span class="number">48</span> &amp;&amp; x &lt;= <span class="number">67</span>).count() + <span class="string">&quot;个&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">countLowercaseLetters</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        Stream&lt;Character&gt; s = String.valueOf(str).chars().mapToObj(a -&gt; (<span class="keyword">char</span>) a);</span><br><span class="line">        System.out.println(<span class="string">&quot;大写字母有:&quot;</span> + s.filter(x -&gt; x &gt;= <span class="number">65</span> &amp;&amp; x &lt;= <span class="number">90</span>).count() + <span class="string">&quot;个&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">countUppercaseLetters</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        Stream&lt;Character&gt; s = String.valueOf(str).chars().mapToObj(a -&gt; (<span class="keyword">char</span>) a);</span><br><span class="line">        System.out.println(<span class="string">&quot;小写字母有:&quot;</span> + s.filter(x -&gt; x &gt;= <span class="number">97</span> &amp;&amp; x &lt;= <span class="number">122</span>).count() + <span class="string">&quot;个&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ISO-8859-1编码"><a href="#ISO-8859-1编码" class="headerlink" title="ISO-8859-1编码"></a>ISO-8859-1编码</h2><p>ISO-8859-1 是大多数浏览器默认的字符集。</p>
+<p>ISO-8859-1 的较低部分（从 1 到 127 之间的代码）是最初的 ASCII 字符集（0-9 的数字，大写和小写英文字母表，以及一些特殊字符）。</p>
+<p>ISO-8859-1 的较高部分（从 160 到 255 之间的代码）包含了一些西欧国家使用的字符和一些被广泛使用的特殊字符，它们全都有实体名称。</p>
+<p>Latin1是<em>ISO-8859-1</em>的别名</p>
+<p>属于单字节编码，最多能表示的字符范围是0-255</p>
+<h2 id="Unicode编码"><a href="#Unicode编码" class="headerlink" title="Unicode编码"></a>Unicode编码</h2><p>由于ASCII编码方式包含的字符太少,基本只对英文字符进行了编码.</p>
+<p>为了方便交流,防止乱码,Unicode编码方式应运而生.</p>
+<p>Unicode编码被称为万国码,单一码,统一码.它是为每种语言的每个字符都设定了统一的,唯一的二进制编码,以满足跨语言,跨平台进行文本交换和处理的需求,是计算机科学领域的一项业界标准.对于 Unicode 有一些误解，它仅仅只是一个<strong>字符集</strong>，规定了符合对应的二进制代码，至于<strong>这个二进制代码如何存储</strong>则没有任何规定。它的想法很简单，<strong>就是为每个字符规定一个用来表示该字符的数字，仅此而已</strong>。</p>
+<p>Unicode对英文进行编码,相对于ASCII编码来说,会更占用空间.<strong>Unicode使用两个字节存储,而英文存储本身只需要占用一个字节</strong>,用Unicode编码,就会在多出的一个<strong>字节上全部置零.这就造成了空间浪费</strong>.于是就有了UTF-8编码</p>
+<h3 id="Java中一个字符用Unicode编码为什么不是两字节"><a href="#Java中一个字符用Unicode编码为什么不是两字节" class="headerlink" title="Java中一个字符用Unicode编码为什么不是两字节"></a>Java中一个字符用Unicode编码为什么不是两字节</h3><p>在java程序中，使用Unicode计算字节数，会发现Unicode占用4个字节，与之前的预期不符</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    String a = <span class="string">&quot;啊&quot;</span>; <span class="comment">// 一个中文字符</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;unicode&quot;</span> + <span class="string">&quot;编码字符所占字节数:&quot;</span></span><br><span class="line">                + a.getBytes(<span class="string">&quot;unicode&quot;</span>).length);<span class="comment">//a.getBytes(&quot;utf-8&quot;).length</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="二进制的高低位"><a href="#二进制的高低位" class="headerlink" title="二进制的高低位"></a>二进制的高低位</h3><p>一个16位的二级制数符占两个字节的存储空间，即高位字节和低位字节。如果你是在纸上书写一个16位的数，你总是会把高位字节写在前面，而把低位字节写在后面。然而，当这个数被存储到计算机中时，并没有固定的存储顺序。</p>
+<p>如果我们用M和L分别表示高位字节和低位字节，那么可以有两种方式把这两个字节存储到计算机存中，即M在前L在后或者L在前M在后。</p>
+<p>把M存储在前的顺序被称为“正向(forward)”或“高位优先(big—endian)”顺序；把L存储在前的顺序被称为“逆向(reverse)”或“低位优先(little—endian)”顺序。</p>
+<p>big—endian这个术语的含义是数的“高位(big end)”存储在前。</p>
+<p>大多数计算机按正向顺序存储一个数，Intel CPU按逆向顺序存储一个数，因此，如果试图将基于Intel CPU的计算机连到其它类型的计算机上，就可能会引起混乱。另外，当字节流在网络上传输时，如果你从高位到低位的顺序发送，接受者却以低位到高位的顺序结束，也会发生混乱。</p>
+<p>那么，怎样明确的通过一些方式来表明字节的高低位顺序呢？</p>
+<h3 id="BOM"><a href="#BOM" class="headerlink" title="BOM"></a>BOM</h3><p>BOM（Byte Order Mark），字节顺序标记。</p>
+<p>unicode编码规范中编码中有一个叫做 “Zero Width No-Break Space” ，中文译名作“零宽无间断间隔”的字符，它的编码用十六进制表示是FEFF。而 FEFF 在 unicode 中是不存在的字符，所以不应该出现在实际内容中。unicode 规范建议我们在传输字节流前，先传输这个FEFF。这样如果接收者收到 FEFF，就表明这个字节流是Big-Endian(高位在前) 的；如果收到FFFE，就表明这个字节流是 Little- Endian(低位在前)的。因此字符 “Zero Width No-Break Space” （“零宽无间断间隔”）又被称作 BOM。</p>
+<p>说白了就是用一个专门的unicode字符来加在实际内容的前面，来告诉使用者我这个内容里的字节顺序是高位在前还是低位在前的。</p>
+<p>如此一来，上面程序的结果也就能解释的通了。</p>
+<p>基于unicode的编码总会比实际内容多出两个字节，就是那个BOM，它也是一个unicode字符，所有也需两字节。</p>
+<p>而utf-8编码有自己特殊的特征，它完全可以根据自己的编码方式避免这个高低位顺序的问题，所以不需要BOM。</p>
+<h2 id="UTF-8编码"><a href="#UTF-8编码" class="headerlink" title="UTF-8编码"></a>UTF-8编码</h2><p>它是Unicode的<strong>实现方式之一</strong>,是一种可变字节的编码方式,用<strong>1-4个字节</strong>来表示一个字符.对英文就使用<strong>1个字节</strong>来表示.对汉字就使用<strong>3个字节</strong>来表示。</p>
+<p>UTF-8 是一个非常惊艳的编码方式，漂亮的实现了对 ASCII 码的向后兼容，以保证 Unicode 可以被大众接受。</p>
+<p>编码规则如下：</p>
+<p>对于单个字节的字符，<strong>第一位设为 0</strong>，后面的 7 位对应这个字符的 Unicode 码点。因此，对于英文中的 0 - 127 号字符，与 ASCII 码完全相同。这意味着 ASCII 码那个年代的文档用 UTF-8 编码打开完全没有问题。</p>
+<p>对于需要使用 N 个字节来表示的字符（N &gt; 1），第一个字节的<strong>前 N 位都设为 1</strong>，<strong>第 N + 1 位设为0</strong>，<strong>剩余的 N - 1 个字节的前两位都设位 10</strong>，剩下的二进制位则使用这个字符的 Unicode 码点来填充。</p>
+<p>编码规则如下：</p>
+<p><img src="/2021/10/28/code/unicode.png"></p>
+<p>根据上面编码规则对照表，进行 UTF-8 编码和解码就简单多了。下面以汉字“汉”为利，具体说明如何进行 UTF-8 编码和解码。</p>
+<p>“汉”的 Unicode 码点是 0x6c49（110 1100 0100 1001），通过上面的对照表可以发现，0x0000 6c49 位于第三行的范围，那么得出其格式为 1110xxxx 10xxxxxx 10xxxxxx。接着，从“汉”的二进制数最后一位开始，从后向前依次填充对应格式中的 x，多出的 x 用 0 补上。这样，就得到了“汉”的 UTF-8 编码为 11100110 10110001 10001001，转换成十六进制就是 0xE6 0xB7 0x89。</p>
+<p>解码的过程也十分简单：如果一个字节的第一位是 0 ，则说明这个字节对应一个字符；如果一个字节的第一位1，那么连续有多少个 1，就表示该字符占用多少个字节。</p>
+<h2 id="GBK编码"><a href="#GBK编码" class="headerlink" title="GBK编码"></a>GBK编码</h2><p>GBK，全称为Chinese Internal Code Specification，即汉字内码扩展规范。它主要是扩展了GB2312。</p>
+<p>这就是汉字的国标码，专门用来表示汉字，是<strong>双字节</strong>编码</p>
+<h2 id="URL编码"><a href="#URL编码" class="headerlink" title="URL编码"></a>URL编码</h2><p>首先要明确一点的是，URL编码和之前的编码不是一个概念。</p>
+<p>URL编码不是一个编码字符集，它是一个为了传送数据而产生的编码方式</p>
+<p>什么是编码字符集？能够实现二进制数据 &lt;—-&gt;  具体字符 的互相转换</p>
+<p>但有人可能会疑惑，明明URL编码也能实现同样的功能啊。所以我们可以通过源码来一探究竟。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">encode</span><span class="params">(String s, String enc)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> needToChange = <span class="keyword">false</span>;</span><br><span class="line">    StringBuffer out = <span class="keyword">new</span> StringBuffer(s.length());</span><br><span class="line">    Charset charset;</span><br><span class="line">    CharArrayWriter charArrayWriter = <span class="keyword">new</span> CharArrayWriter();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 字符集不能为null</span></span><br><span class="line">    <span class="keyword">if</span> (enc == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">&quot;charsetName&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        charset = Charset.forName(enc);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IllegalCharsetNameException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedEncodingException(enc);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (UnsupportedCharsetException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedEncodingException(enc);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length();) &#123;</span><br><span class="line">        <span class="comment">// 如果s[i]是ascii码，则不需要进行编码</span></span><br><span class="line">        <span class="keyword">int</span> c = (<span class="keyword">int</span>) s.charAt(i);</span><br><span class="line">        <span class="keyword">if</span> (dontNeedEncoding.get(c)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="string">&#x27; &#x27;</span>) &#123;</span><br><span class="line">                c = <span class="string">&#x27;+&#x27;</span>;</span><br><span class="line">                needToChange = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//System.out.println(&quot;Storing: &quot; + c);</span></span><br><span class="line">            out.append((<span class="keyword">char</span>)c);</span><br><span class="line">            i++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 如果s[i]不是ascii码，则需要找到下一个连续的非ascii码字符串</span></span><br><span class="line">        <span class="comment">// 例如 </span></span><br><span class="line">        <span class="comment">// &quot;ab你好c我的天空&quot;</span></span><br><span class="line">        <span class="comment">// 前两个字母ab直接写入out里面，将你好这两个词语，写入charArrayWriter中</span></span><br><span class="line">            <span class="keyword">do</span> &#123;</span><br><span class="line">                charArrayWriter.write(c);</span><br><span class="line">                <span class="comment">// 处理代理块</span></span><br><span class="line">                <span class="comment">// 其中0xD800 至 0xDBFF（高代理high surrogate） 和 0xDC00 至 0xDFFF（低代理low surrogate）被称为surrogate blocks（代理块）</span></span><br><span class="line">                <span class="comment">// 代理块是为了表示增补字符 增补字符是在 [#x10000-#x10FFFF] 范围之间的字符</span></span><br><span class="line">                <span class="keyword">if</span> (c &gt;= <span class="number">0xD800</span> &amp;&amp; c &lt;= <span class="number">0xDBFF</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ( (i+<span class="number">1</span>) &lt; s.length()) &#123;</span><br><span class="line">                        <span class="keyword">int</span> d = (<span class="keyword">int</span>) s.charAt(i+<span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">if</span> (d &gt;= <span class="number">0xDC00</span> &amp;&amp; d &lt;= <span class="number">0xDFFF</span>) &#123;</span><br><span class="line">                            charArrayWriter.write(d);</span><br><span class="line">                            i++;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">            &#125; <span class="keyword">while</span> (i &lt; s.length() &amp;&amp; !dontNeedEncoding.get((c = (<span class="keyword">int</span>) s.charAt(i))));</span><br><span class="line">            </span><br><span class="line">            charArrayWriter.flush();</span><br><span class="line">            String str = <span class="keyword">new</span> String(charArrayWriter.toCharArray());</span><br><span class="line">            <span class="comment">// 根据编码，转化为字节数组</span></span><br><span class="line">            <span class="keyword">byte</span>[] ba = str.getBytes(charset);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; ba.length; j++) &#123;</span><br><span class="line">                out.append(<span class="string">&#x27;%&#x27;</span>);</span><br><span class="line">                <span class="comment">// 获取高位字母</span></span><br><span class="line">                <span class="keyword">char</span> ch = Character.forDigit((ba[j] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0xF</span>, <span class="number">16</span>);</span><br><span class="line">                <span class="comment">// converting to use uppercase letter as part of</span></span><br><span class="line">                <span class="comment">// the hex value if ch is a letter.</span></span><br><span class="line">                <span class="comment">// 如果为字母，则如果转化为大写字母</span></span><br><span class="line">                <span class="keyword">if</span> (Character.isLetter(ch)) &#123;</span><br><span class="line">                    ch -= caseDiff;</span><br><span class="line">                &#125;</span><br><span class="line">                out.append(ch);</span><br><span class="line">                <span class="comment">// 获取低位字母</span></span><br><span class="line">                ch = Character.forDigit(ba[j] &amp; <span class="number">0xF</span>, <span class="number">16</span>);</span><br><span class="line">                <span class="keyword">if</span> (Character.isLetter(ch)) &#123;</span><br><span class="line">                    ch -= caseDiff;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 如果为字符，则如果转化为大写字母</span></span><br><span class="line">                out.append(ch);</span><br><span class="line">            &#125;</span><br><span class="line">            charArrayWriter.reset();</span><br><span class="line">            needToChange = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (needToChange? out.toString() : s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单解释一下UrlEncode流程</p>
+<p>使用utf-8 编码”abc你好de”</p>
+<ol>
+<li>a,b,c都是不需要进行编码的字符，所以直接写入out，现在out为abc</li>
+<li>获取”你好”字符串</li>
+<li>将”你好”用utf-8进行解码，获取到byte数组</li>
+<li>将高四位和低四位的byte分别转化为16进制，并将字母转化为大写字母，在前面加上%，写入out中，现在out为abc%E4%BD%A0%E5%A5%BD</li>
+<li>处理剩下的de，发现de都是不需要进行编码的字符，所以直接写入out，现在out为abc%E4%BD%A0%E5%A5%BDde</li>
+</ol>
+<p>使用gbk编码获取”abc你好de”的UrlEncode结果则是 abc%C4%E3%BA%C3de</p>
+<h2 id="各编码中文英文字节数验证"><a href="#各编码中文英文字节数验证" class="headerlink" title="各编码中文英文字节数验证"></a>各编码中文英文字节数验证</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.UnsupportedEncodingException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Code</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String[] charsetNames = &#123;<span class="string">&quot;utf-8&quot;</span>, <span class="string">&quot;Unicode&quot;</span>, <span class="string">&quot;GBK&quot;</span>, <span class="string">&quot;ISO8859-1&quot;</span>, <span class="string">&quot;ASCII&quot;</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; charsetNames.length; i++) &#123;</span><br><span class="line">            printByteLength(charsetNames[i]);</span><br><span class="line">            printByteLength2(charsetNames[i]);</span><br><span class="line">            printByteLength3(charsetNames[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printByteLength</span><span class="params">(String charsetName)</span> </span>&#123;</span><br><span class="line">        String a = <span class="string">&quot;a&quot;</span>; <span class="comment">// 一个英文字符</span></span><br><span class="line">        String b = <span class="string">&quot;啊&quot;</span>; <span class="comment">// 一个中文字符</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;1个&quot;</span> + charsetName + <span class="string">&quot;编码英文字符所占字节数:&quot;</span></span><br><span class="line">                    + a.getBytes(charsetName).length);<span class="comment">//a.getBytes(&quot;utf-8&quot;).length</span></span><br><span class="line">            System.out.println(<span class="string">&quot;1个&quot;</span> + charsetName + <span class="string">&quot;编码中文字符所占字节数:&quot;</span></span><br><span class="line">                    + b.getBytes(charsetName).length);</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;非法编码格式！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printByteLength2</span><span class="params">(String charsetName)</span> </span>&#123;</span><br><span class="line">        String a = <span class="string">&quot;aa&quot;</span>; <span class="comment">// 一个英文字符</span></span><br><span class="line">        String b = <span class="string">&quot;啊啊&quot;</span>; <span class="comment">// 一个中文字符</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;2个&quot;</span> + charsetName + <span class="string">&quot;编码英文字符所占字节数:&quot;</span></span><br><span class="line">                    + a.getBytes(charsetName).length);<span class="comment">//a.getBytes(&quot;utf-8&quot;).length</span></span><br><span class="line">            System.out.println(<span class="string">&quot;2个&quot;</span> + charsetName + <span class="string">&quot;编码中文字符所占字节数:&quot;</span></span><br><span class="line">                    + b.getBytes(charsetName).length);</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;非法编码格式！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printByteLength3</span><span class="params">(String charsetName)</span> </span>&#123;</span><br><span class="line">        String a = <span class="string">&quot;aaa&quot;</span>; <span class="comment">// 一个英文字符</span></span><br><span class="line">        String b = <span class="string">&quot;啊啊啊&quot;</span>; <span class="comment">// 一个中文字符</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;3个&quot;</span> + charsetName + <span class="string">&quot;编码英文字符所占字节数:&quot;</span></span><br><span class="line">                    + a.getBytes(charsetName).length);<span class="comment">//a.getBytes(&quot;utf-8&quot;).length</span></span><br><span class="line">            System.out.println(<span class="string">&quot;3个&quot;</span> + charsetName + <span class="string">&quot;编码中文字符所占字节数:&quot;</span></span><br><span class="line">                    + b.getBytes(charsetName).length);</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;非法编码格式！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>显示结果：</p>
+<p>1个utf-8编码英文字符所占字节数:1<br>1个utf-8编码中文字符所占字节数:3</p>
+<p>2个utf-8编码英文字符所占字节数:2<br>2个utf-8编码中文字符所占字节数:6</p>
+<p>3个utf-8编码英文字符所占字节数:3<br>3个utf-8编码中文字符所占字节数:9</p>
+<p>1个Unicode编码英文字符所占字节数:4<br>1个Unicode编码中文字符所占字节数:4</p>
+<p>2个Unicode编码英文字符所占字节数:6<br>2个Unicode编码中文字符所占字节数:6</p>
+<p>3个Unicode编码英文字符所占字节数:8<br>3个Unicode编码中文字符所占字节数:8</p>
+<p>1个GBK编码英文字符所占字节数:1<br>1个GBK编码中文字符所占字节数:2</p>
+<p>2个GBK编码英文字符所占字节数:2<br>2个GBK编码中文字符所占字节数:4</p>
+<p>3个GBK编码英文字符所占字节数:3<br>3个GBK编码中文字符所占字节数:6</p>
+<p>1个ISO8859-1编码英文字符所占字节数:1<br>1个ISO8859-1编码中文字符所占字节数:1</p>
+<p>2个ISO8859-1编码英文字符所占字节数:2<br>2个ISO8859-1编码中文字符所占字节数:2</p>
+<p>3个ISO8859-1编码英文字符所占字节数:3<br>3个ISO8859-1编码中文字符所占字节数:3</p>
+<p>1个ASCII编码英文字符所占字节数:1<br>1个ASCII编码中文字符所占字节数:1</p>
+<p>2个ASCII编码英文字符所占字节数:2<br>2个ASCII编码中文字符所占字节数:2</p>
+<p>3个ASCII编码英文字符所占字节数:3<br>3个ASCII编码中文字符所占字节数:3</p>
+<h1 id="乱码"><a href="#乱码" class="headerlink" title="乱码"></a>乱码</h1><p>乱码问题的产生最根本的原因就是使用错误的字符集解码字节流或者将给定的字符串 用错误的字符集编码成字节流造成的，例如”中文”两个汉字，如果用ISO8859-1字符集将其编码为字节流，因为这个字符集不支持中文，所以就会出 错，输出结果为3f3f，其意义就是??。再例如”中文”二字的GBK的字节流为d6 d0 ce c4，可是我们要是用不兼容的字符集去解码，例如用ISO8859-1或者UTF-8，这随后产生的字符串就是乱码，或者是其他的某个字符。</p>
+<p>一般来说给定的字符串 用错误的字符集编码成字节流，是工作中更容易出现乱码的原因。</p>
+<p>例如，一个文件是gbk编码，我们使用utf-8的编码字符集进行读取，就会出现乱码</p>
+<h2 id="如何解决乱码"><a href="#如何解决乱码" class="headerlink" title="如何解决乱码"></a>如何解决乱码</h2><p>1.很多的乱码问题，很可能是没有对相应的编码字符集进行配置，找到原因，配置就没问题</p>
+<p>2.如果是与其他人对接，则需要确认对方的编码格式是否与你的编码格式一致，然后才能解决</p>
+<p>3.如果是在调用系统相关功能出现乱码，或者确定不了对应编码格式，则可以根据乱码特征进行编码的猜测</p>
+<p><img src="/2021/10/28/code/%E4%B9%B1%E7%A0%81.jpg"></p>
+
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://yangzihan.github.io.git/index.html">https://yangzihan.github.io.git/index.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%9F%BA%E7%A1%80/" rel="tag">java基础</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-jvm" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/10/27/jvm/">jvm 原理及垃圾回收</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-27T15:25:45.000Z" itemprop="datePublished">2021年10月27日</time>
+</span>
+      
+      
+      
+<a href="/2021/10/27/jvm/#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Java运行时数据区域"><a href="#Java运行时数据区域" class="headerlink" title="Java运行时数据区域"></a>Java运行时数据区域</h1><p><img src="/2021/10/27/jvm/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="内存模型"></p>
+<p>在jdk1.8以前，永久代中用于存放类和方法的元数据以及常量池，比如<code>Class</code>和<code>Method</code>。每当一个类初次被加载的时候，它的元数据都会放到永久代中</p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://yangzihan.github.io.git/index.html">https://yangzihan.github.io.git/index.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%9F%BA%E7%A1%80/" rel="tag">java基础</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-foundation-type" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/10/24/foundation-type/">java 基础类型</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-23T16:00:00.000Z" itemprop="datePublished">2021年10月24日</time>
+</span>
+      
+      
+      
+<a href="/2021/10/24/foundation-type/#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="一-java基础类型"><a href="#一-java基础类型" class="headerlink" title="一.java基础类型"></a>一.java基础类型</h1><p> java中有8种基本类型，分为4类，分别为：</p>
+<p>整型：包括 byte 、 short、 int 、 long</p>
+<p>泛型：float、double</p>
+<p>字符型：char</p>
+<p>布尔型：boolean</p>
+<h2 id="取值范围"><a href="#取值范围" class="headerlink" title="取值范围"></a>取值范围</h2><p>char 数字范围为：0-65535</p>
+<p><img src="/2021/10/24/foundation-type/java_type.png" alt="java_type.png"></p>
+<p>整型的取值范围均为 -2^n 到 2^n-1 (n为bit数)</p>
+<p>不能直接赋值超过取值范围的数值，编译不通过</p>
+<h2 id="数据的溢出："><a href="#数据的溢出：" class="headerlink" title="数据的溢出："></a>数据的溢出：</h2><p>当整数的数据大小超出了可以表示的范围，而程序中又没有做数值范围的检查时，</p>
+<p>这个整型变量所输出的值将发生紊乱，且不是预期的运行结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span> a = <span class="number">127</span>;</span><br><span class="line">        System.out.println(plus(a));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span> b = -<span class="number">128</span>;</span><br><span class="line">        System.out.println(reduce(b));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span> <span class="title">plus</span><span class="params">(<span class="keyword">byte</span> b)</span> </span>&#123;</span><br><span class="line">        b += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span> <span class="title">reduce</span><span class="params">(<span class="keyword">byte</span> b)</span> </span>&#123;</span><br><span class="line">        b -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当最大值加上 1 时，结果反而变成表示范围中最小的值</p>
+<p>当最小值减去 1 时，结果反而变成表示范围中最大的值</p>
+<h1 id="二-包装类"><a href="#二-包装类" class="headerlink" title="二.包装类"></a>二.包装类</h1><h2 id="什么是包装类"><a href="#什么是包装类" class="headerlink" title="什么是包装类"></a>什么是包装类</h2><p>java中的数据类型int，double等不是对象，无法通过向上转型获取到Object提供的方法，而像String却可以，只因为String是一个对象而不是一个类型。基本数据类型由于这样的特性，导致无法参与转型，泛型，反射等过程。为了弥补这个缺陷，java提供了包装类。</p>
+<h2 id="为什么要有包装类"><a href="#为什么要有包装类" class="headerlink" title="为什么要有包装类"></a>为什么要有包装类</h2><p><strong>1.效率问题</strong></p>
+<p>​        Java语言中，new一个对象存储在堆里，我们通过栈中的引用来使用这些对象；但是对于经常用到的一系列类型如int，如果我们用new将其存储在堆里就不是很有效。对于这些类型不是用new关键字来创建，而是直接将变量的值存储在栈中，因此更加高效。</p>
+<p><strong>和这个问题类似的有</strong></p>
+<p>为什么 Java 需要一个单独的字符串常量池来存储字符串？为什么字符串不像其它对象那样存储在堆内存中？</p>
+<p>通常，在一个 Java 业务应用程序会创建并处理成千上万个字符串对象（实际开发中几乎没有不使用 String 的程序），这些字符串对象中有许多具有<strong>相同的值或者是中间操作字符而非最终结果</strong>。如果我们将所有这些字符串对象存储在堆内存中，仅仅是存储这些<strong>字符串对象就需要占用大量的堆内存</strong>。<strong>当回收不再使用的字符串对象时也会导致垃圾收集器频繁地运行，这将大大降低应用程序的性能</strong>。</p>
+<p>为了避免 JVM 首先创建大量的字符串对象，然后再进行垃圾回收。 JVM 将所有字符串字面量存储在称为字符串常量池的单独内存区域中，并重用该高速缓存池中的对象。</p>
+<p>当我们创建字符串字面量时，JVM 就会首先查看 SCP 中是否已经存在该字符串字面量，如果存在，则新的引用变量指向 SCP 中的同一个字符串字面量，这个过程称为 String Interning。</p>
+<p><strong>按照这个逻辑，再想一想，为什么包装类会存在缓存数据？是不是和上面的原因很类似？</strong></p>
+<p><strong>2.设计问题</strong></p>
+<p>​      Java是一个<strong>面相对象</strong>的编程语言，<strong>基本类型并不具有对象的性质</strong>，为了让基本类型也具有对象的特征，就出现了包装类型</p>
+<h2 id="拆箱装箱"><a href="#拆箱装箱" class="headerlink" title="拆箱装箱"></a>拆箱装箱</h2><p>拆箱，即，把基包装类型转换为基本类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i=<span class="keyword">new</span> Integer(<span class="number">0</span>);</span><br><span class="line">等同于</span><br><span class="line">Integer ii = <span class="keyword">new</span> Integer(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">int</span> i = ii.intValue();</span><br></pre></td></tr></table></figure>
+
+<p>装箱，即，基本类型转换为对应的包装类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Integer i = <span class="number">0</span>;</span><br><span class="line">等同于</span><br><span class="line">Integer i=<span class="keyword">new</span> Integer(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是</p>
+<p>Double d=2; 这种语句是会<strong>编译不通过的</strong></p>
+<p>即便Double d=new Double(2);<strong>是没有问题的</strong></p>
+<p>原因：java: 不兼容的类型: int无法转换为java.lang.Double</p>
+<p>装箱只适用于<strong>同种类型的基础数据类型</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> a=<span class="keyword">new</span> Byte((<span class="keyword">byte</span>) <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>但是<strong>拆箱却满足向上转型的规则</strong>，上面这一句能编译成功的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> a=<span class="keyword">new</span> Integer(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>而这一句是编译不成功的</p>
+<h2 id="包装类缓存"><a href="#包装类缓存" class="headerlink" title="包装类缓存"></a>包装类缓存</h2><p>Byte、Short、Integer、Long、Character的定义中都有一个缓存机制，-128~127对应的对象会缓存到缓存中，调用valueOf()方法时，会先判断数据是否在这个范围内，如果在范围内，返回缓存对象，如果超出范围，新建一个对象返回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Integer a1 = new Integer(127);</span><br><span class="line">Integer a2 = new Integer(127);</span><br><span class="line">System.out.println(a1 == a2);</span><br><span class="line">// false</span><br><span class="line"></span><br><span class="line">Integer a3 = 127;</span><br><span class="line">Integer a4 = 127;</span><br><span class="line">System.out.println(a3 == a4);</span><br><span class="line">// ture</span><br><span class="line"></span><br><span class="line">Integer a5 = 128;</span><br><span class="line">Integer a6 = 128;</span><br><span class="line">System.out.println(a5 == a6);</span><br><span class="line">// false</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="向上转型"><a href="#向上转型" class="headerlink" title="向上转型"></a>向上转型</h2><p><strong>取值范围小的类型</strong>可自动转换为<strong>取值范围大</strong>的数据类型；(和数据所占用的<strong>字节数大小没有关系</strong>)</p>
+<p>例如 long的字节数是8，float的字节数是4，但是float是不能转化为long的，<strong>因为float的取值范围比long更大</strong></p>
+<p>byte,short,char → int → long → float → double</p>
+<p>byte，short，char之间不会相互转换，他们在计算时首先会转换为int类型。</p>
+<p>boolean 类型是不可以转换为其他基本数据类型。</p>
+
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://yangzihan.github.io.git/index.html">https://yangzihan.github.io.git/index.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%9F%BA%E7%A1%80/" rel="tag">java基础</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-yangzihan" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/10/20/yangzihan/">你好，这里是杨子寒的个人博客</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-19T16:00:00.000Z" itemprop="datePublished">2021年10月20日</time>
+</span>
+      
+      
+      
+<a href="/2021/10/20/yangzihan/#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="为什么创建博客"><a href="#为什么创建博客" class="headerlink" title="为什么创建博客"></a>为什么创建博客</h1><p>​        可能是因为无聊，可能是因为一时兴起，可能是因为想积累技术，可能是因为程序员都应该创建一个博客，也可能是因为想要记录点什么。</p>
+<p>​        人始终要不断学习新的事物，新的知识，在这个互联网时代，信息如此发达，以致于获取到知识的成本非常低廉。以前的人们学习的途径可能是自己阅读书籍，可能是通过老师传授知识，大家总是会格外珍惜学到的知识，小心翼翼的爱护自己的笔记和书籍。但现在，触手可得的知识仿佛变得廉价，人们不再会去专门记录自己所学的东西，因为即便忘了，只有上网一搜，答案就出来了。我们变得逐渐只需要去记住索引，不用去记住内容。我们将知识抛弃在浩瀚的互联网中，却不曾知晓，我们也早已被抛弃。</p>
+<p>​       所以，我想要记录点什么，就像小时候课堂认真的笔记一样，或是记录以前感兴趣的书籍一样。</p>
+<h1 id="博客的内容"><a href="#博客的内容" class="headerlink" title="博客的内容"></a>博客的内容</h1><p>​        目前的博客还是以技术记录为主，对于一些感兴趣的事物也会进行记录</p>
+<p>​        编程语言：java，python</p>
+<p>​        中间件：rocketMq，kafka，rabbitMq，redis，elasticsearch，logstash，hadoop，hbase，zookeeper，mysql</p>
+<p>​        框架：springCloud，springCloudAlibaba，springBoot，dubbo</p>
+<p>​        协议：http，https，ftp，rpc</p>
+<p>​        项目搭建：docker，k8s</p>
+<h1 id="写博客的频率"><a href="#写博客的频率" class="headerlink" title="写博客的频率"></a>写博客的频率</h1><p>​        一周一次</p>
+<h1 id="致自己"><a href="#致自己" class="headerlink" title="致自己"></a>致自己</h1><p>​        希望自己能够坚持下去</p>
+
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://yangzihan.github.io.git/index.html">https://yangzihan.github.io.git/index.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/31/stream/">如何使用stream优化代码</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/28/code/">java 编码</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/27/jvm/">jvm 原理及垃圾回收</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/24/foundation-type/">java 基础类型</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/20/yangzihan/">你好，这里是杨子寒的个人博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/java%E5%9F%BA%E7%A1%80/" style="font-size: 20px;">java基础</a> <a href="/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 10px;">生活</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年10月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%9F%BA%E7%A1%80/" rel="tag">java基础</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 Yangzh.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

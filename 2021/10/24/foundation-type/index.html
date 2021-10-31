@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>java 基础类型 | 每周努力一点点</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="每周努力一点点" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">每周努力一点点</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">试了无数次成功一次，那个机会不是被抓住，那个机会是被试出来的</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa "></i> 关于</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-foundation-type" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      java 基础类型
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-23T16:00:00.000Z" itemprop="datePublished">2021年10月24日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/10/24/foundation-type/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="一-java基础类型"><a href="#一-java基础类型" class="headerlink" title="一.java基础类型"></a>一.java基础类型</h1><p> java中有8种基本类型，分为4类，分别为：</p>
+<p>整型：包括 byte 、 short、 int 、 long</p>
+<p>泛型：float、double</p>
+<p>字符型：char</p>
+<p>布尔型：boolean</p>
+<h2 id="取值范围"><a href="#取值范围" class="headerlink" title="取值范围"></a>取值范围</h2><p>char 数字范围为：0-65535</p>
+<p><img src="/2021/10/24/foundation-type/java_type.png" alt="java_type.png"></p>
+<p>整型的取值范围均为 -2^n 到 2^n-1 (n为bit数)</p>
+<p>不能直接赋值超过取值范围的数值，编译不通过</p>
+<h2 id="数据的溢出："><a href="#数据的溢出：" class="headerlink" title="数据的溢出："></a>数据的溢出：</h2><p>当整数的数据大小超出了可以表示的范围，而程序中又没有做数值范围的检查时，</p>
+<p>这个整型变量所输出的值将发生紊乱，且不是预期的运行结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span> a = <span class="number">127</span>;</span><br><span class="line">        System.out.println(plus(a));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span> b = -<span class="number">128</span>;</span><br><span class="line">        System.out.println(reduce(b));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span> <span class="title">plus</span><span class="params">(<span class="keyword">byte</span> b)</span> </span>&#123;</span><br><span class="line">        b += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span> <span class="title">reduce</span><span class="params">(<span class="keyword">byte</span> b)</span> </span>&#123;</span><br><span class="line">        b -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当最大值加上 1 时，结果反而变成表示范围中最小的值</p>
+<p>当最小值减去 1 时，结果反而变成表示范围中最大的值</p>
+<h1 id="二-包装类"><a href="#二-包装类" class="headerlink" title="二.包装类"></a>二.包装类</h1><h2 id="什么是包装类"><a href="#什么是包装类" class="headerlink" title="什么是包装类"></a>什么是包装类</h2><p>java中的数据类型int，double等不是对象，无法通过向上转型获取到Object提供的方法，而像String却可以，只因为String是一个对象而不是一个类型。基本数据类型由于这样的特性，导致无法参与转型，泛型，反射等过程。为了弥补这个缺陷，java提供了包装类。</p>
+<h2 id="为什么要有包装类"><a href="#为什么要有包装类" class="headerlink" title="为什么要有包装类"></a>为什么要有包装类</h2><p><strong>1.效率问题</strong></p>
+<p>​        Java语言中，new一个对象存储在堆里，我们通过栈中的引用来使用这些对象；但是对于经常用到的一系列类型如int，如果我们用new将其存储在堆里就不是很有效。对于这些类型不是用new关键字来创建，而是直接将变量的值存储在栈中，因此更加高效。</p>
+<p><strong>和这个问题类似的有</strong></p>
+<p>为什么 Java 需要一个单独的字符串常量池来存储字符串？为什么字符串不像其它对象那样存储在堆内存中？</p>
+<p>通常，在一个 Java 业务应用程序会创建并处理成千上万个字符串对象（实际开发中几乎没有不使用 String 的程序），这些字符串对象中有许多具有<strong>相同的值或者是中间操作字符而非最终结果</strong>。如果我们将所有这些字符串对象存储在堆内存中，仅仅是存储这些<strong>字符串对象就需要占用大量的堆内存</strong>。<strong>当回收不再使用的字符串对象时也会导致垃圾收集器频繁地运行，这将大大降低应用程序的性能</strong>。</p>
+<p>为了避免 JVM 首先创建大量的字符串对象，然后再进行垃圾回收。 JVM 将所有字符串字面量存储在称为字符串常量池的单独内存区域中，并重用该高速缓存池中的对象。</p>
+<p>当我们创建字符串字面量时，JVM 就会首先查看 SCP 中是否已经存在该字符串字面量，如果存在，则新的引用变量指向 SCP 中的同一个字符串字面量，这个过程称为 String Interning。</p>
+<p><strong>按照这个逻辑，再想一想，为什么包装类会存在缓存数据？是不是和上面的原因很类似？</strong></p>
+<p><strong>2.设计问题</strong></p>
+<p>​      Java是一个<strong>面相对象</strong>的编程语言，<strong>基本类型并不具有对象的性质</strong>，为了让基本类型也具有对象的特征，就出现了包装类型</p>
+<h2 id="拆箱装箱"><a href="#拆箱装箱" class="headerlink" title="拆箱装箱"></a>拆箱装箱</h2><p>拆箱，即，把基包装类型转换为基本类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i=<span class="keyword">new</span> Integer(<span class="number">0</span>);</span><br><span class="line">等同于</span><br><span class="line">Integer ii = <span class="keyword">new</span> Integer(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">int</span> i = ii.intValue();</span><br></pre></td></tr></table></figure>
+
+<p>装箱，即，基本类型转换为对应的包装类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Integer i = <span class="number">0</span>;</span><br><span class="line">等同于</span><br><span class="line">Integer i=<span class="keyword">new</span> Integer(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是</p>
+<p>Double d=2; 这种语句是会<strong>编译不通过的</strong></p>
+<p>即便Double d=new Double(2);<strong>是没有问题的</strong></p>
+<p>原因：java: 不兼容的类型: int无法转换为java.lang.Double</p>
+<p>装箱只适用于<strong>同种类型的基础数据类型</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> a=<span class="keyword">new</span> Byte((<span class="keyword">byte</span>) <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>但是<strong>拆箱却满足向上转型的规则</strong>，上面这一句能编译成功的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> a=<span class="keyword">new</span> Integer(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>而这一句是编译不成功的</p>
+<h2 id="包装类缓存"><a href="#包装类缓存" class="headerlink" title="包装类缓存"></a>包装类缓存</h2><p>Byte、Short、Integer、Long、Character的定义中都有一个缓存机制，-128~127对应的对象会缓存到缓存中，调用valueOf()方法时，会先判断数据是否在这个范围内，如果在范围内，返回缓存对象，如果超出范围，新建一个对象返回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Integer a1 = new Integer(127);</span><br><span class="line">Integer a2 = new Integer(127);</span><br><span class="line">System.out.println(a1 == a2);</span><br><span class="line">// false</span><br><span class="line"></span><br><span class="line">Integer a3 = 127;</span><br><span class="line">Integer a4 = 127;</span><br><span class="line">System.out.println(a3 == a4);</span><br><span class="line">// ture</span><br><span class="line"></span><br><span class="line">Integer a5 = 128;</span><br><span class="line">Integer a6 = 128;</span><br><span class="line">System.out.println(a5 == a6);</span><br><span class="line">// false</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="向上转型"><a href="#向上转型" class="headerlink" title="向上转型"></a>向上转型</h2><p><strong>取值范围小的类型</strong>可自动转换为<strong>取值范围大</strong>的数据类型；(和数据所占用的<strong>字节数大小没有关系</strong>)</p>
+<p>例如 long的字节数是8，float的字节数是4，但是float是不能转化为long的，<strong>因为float的取值范围比long更大</strong></p>
+<p>byte,short,char → int → long → float → double</p>
+<p>byte，short，char之间不会相互转换，他们在计算时首先会转换为int类型。</p>
+<p>boolean 类型是不可以转换为其他基本数据类型。</p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80-java%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B"><span class="toc-text">一.java基础类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%96%E5%80%BC%E8%8C%83%E5%9B%B4"><span class="toc-text">取值范围</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E6%BA%A2%E5%87%BA%EF%BC%9A"><span class="toc-text">数据的溢出：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C-%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="toc-text">二.包装类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="toc-text">什么是包装类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9C%89%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="toc-text">为什么要有包装类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%86%E7%AE%B1%E8%A3%85%E7%AE%B1"><span class="toc-text">拆箱装箱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85%E8%A3%85%E7%B1%BB%E7%BC%93%E5%AD%98"><span class="toc-text">包装类缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E4%B8%8A%E8%BD%AC%E5%9E%8B"><span class="toc-text">向上转型</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://yangzihan.github.io.git/2021/10/24/foundation-type/">https://yangzihan.github.io.git/2021/10/24/foundation-type/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%9F%BA%E7%A1%80/" rel="tag">java基础</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2021/10/27/jvm/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          jvm 原理及垃圾回收
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/10/20/yangzihan/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">你好，这里是杨子寒的个人博客</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/31/stream/">如何使用stream优化代码</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/28/code/">java 编码</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/27/jvm/">jvm 原理及垃圾回收</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/24/foundation-type/">java 基础类型</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/20/yangzihan/">你好，这里是杨子寒的个人博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/java%E5%9F%BA%E7%A1%80/" style="font-size: 20px;">java基础</a> <a href="/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 10px;">生活</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年10月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%9F%BA%E7%A1%80/" rel="tag">java基础</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 Yangzh.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>
